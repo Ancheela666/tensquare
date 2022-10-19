@@ -1,0 +1,71 @@
+server:
+  port: 9004
+spring:
+#  jackson:
+#    serialization:
+#      FAIL_ON_EMPTY_BEANS: false
+  application:
+    name: tensquare-article
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.163.131:3306/tensquare_article?characterEncoding=utf-8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource   #设置类型为 DruidDataSource
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache
+    poolPreparedStatements: true
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果运行时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址： https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,wall,log4j,config
+    #指定每个连接上PSCache的大小
+    maxPoolPreparedStatementPerConnectionSize: 20
+    #合并多个DruidDataSource的监控数据
+    useGlobalDataSourceStat: true
+    #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  data:
+    mongodb:
+      host: 192.168.163.131
+      port: 27017
+      database: commentdb #数据库名字
+  redis:
+    host: 192.168.163.131
+    port: 6379
+  rabbitmq:
+    host: 192.168.163.131
+
+# Mybatis-Plus 配置
+mybatis-plus:
+  #  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.tensquare.article.pojo
+  global-config:
+    id-type: 1  #0:数据库ID自增   1:用户输入id
+    db-column-underline: false
+    refresh-mapper: true
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: true #配置的缓存的全局开关
+      lazyLoadingEnabled: true #延时加载的开关
+      multipleResultSetsEnabled: true #开启延时加载，否则按需加载属性
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+
+# Eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka/
+  instance:
+    prefer-ip-address: true
